@@ -3,10 +3,15 @@ package coroutines
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.supervisorScope
+import kotlinx.coroutines.yield
+import kotlin.coroutines.cancellation.CancellationException
 
 //fun main() {
 //    val exceptionHandler = CoroutineExceptionHandler { _, exception ->
@@ -22,6 +27,11 @@ import kotlinx.coroutines.supervisorScope
 //                    delay(1000)
 //                    throw RuntimeException()
 //                }
+//                launch() {
+//                    println("Launch builder 2")
+//                    delay(1100)
+//                    println("Launch builder 2 completion")
+//                }
 //            }
 //        } catch (e: Exception) {
 //            println("Exception in coroutineScope")
@@ -32,18 +42,18 @@ import kotlinx.coroutines.supervisorScope
 //}
 
 
-//
+
 //fun main(){
 //    val scope = CoroutineScope(Job())
 //    val job = scope.launch {
 //        val child = launch {
-////            try {
+//            try {
 //                println("Child is started")
 //            throw RuntimeException("Child is started")
 //                delay(Long.MAX_VALUE)
-////            } finally {
-////                println("Child is cancelled")
-////            }
+//            } finally {
+//                println("Child is cancelled")
+//            }
 //        }
 //        yield()
 //        println("Cancelling child")
@@ -151,7 +161,7 @@ import kotlinx.coroutines.supervisorScope
 //                firstChild.join()
 //                // Cancellation of the first child is not propagated to the second child
 //                println("The first child is cancelled: ${firstChild.isCancelled}, but the second one is still active")
-//                delay(Long.MAX_VALUE)
+//                delay(3000)
 //            } catch (e: Exception) {
 //                println("Exception caught: $e")
 //            } finally {
@@ -178,7 +188,7 @@ import kotlinx.coroutines.supervisorScope
 //        }
 //        val secondChild = launch {
 //            try {
-//                firstChild.join()
+//                delay(2000)
 //            } catch (e: Exception) {
 //                println("Caught $e")
 //            }
@@ -192,43 +202,43 @@ import kotlinx.coroutines.supervisorScope
 //}
 
 
-//fun main() {
-//    try {
-//        performSomeWork()
-//    } catch (e: Exception) {
-//        println("Exception: $e")
-//    }
-//}
-//
-//fun performSomeWork() = runBlocking(CoroutineExceptionHandler { _, exception ->
-//    println("CoroutineExceptionHandler got $exception")
-//}) {
-//
-//        launch(CoroutineExceptionHandler { _, exception ->
-//            println("Launch CoroutineExceptionHandler got $exception")
-//        }) {
-//            throw RuntimeException()
-//        }
-//    throw ArithmeticException()
-//    Unit
-//}
-
-
 fun main() {
-    val scope = CoroutineScope(Job())
-    scope.launch(CoroutineExceptionHandler { coroutineContext, throwable ->
-        println("CoroutineExceptionHandler got $coroutineContext: $throwable")
-    }) {
-        try {
-            performTasks(CoroutineExceptionHandler { coroutineContext, throwable ->
-                println("CoroutineExceptionHandler got $throwable at child")
-            })
-        } catch (e: Exception) {
-            println("Error: ${e.localizedMessage}")
-        }
+    try {
+        performSomeWork()
+    } catch (e: Exception) {
+        println("Exception: $e")
     }
-    Thread.sleep(2000)
 }
+
+fun performSomeWork() = runBlocking(CoroutineExceptionHandler { _, exception ->
+    println("CoroutineExceptionHandler got $exception")
+}) {
+
+        launch(CoroutineExceptionHandler { _, exception ->
+            println("Launch CoroutineExceptionHandler got $exception")
+        }) {
+            throw RuntimeException()
+        }
+//    throw ArithmeticException()
+    Unit
+}
+
+
+//fun main() {
+//    val scope = CoroutineScope(Job())
+//    scope.launch(CoroutineExceptionHandler { coroutineContext, throwable ->
+//        println("CoroutineExceptionHandler got $coroutineContext: $throwable")
+//    }) {
+//        try {
+//            performTasks(CoroutineExceptionHandler { coroutineContext, throwable ->
+//                println("CoroutineExceptionHandler got $throwable at child")
+//            })
+//        } catch (e: Exception) {
+//            println("Error: ${e.localizedMessage}")
+//        }
+//    }
+//    Thread.sleep(2000)
+//}
 //
 suspend fun performTasks(coroutineExceptionHandler: CoroutineExceptionHandler) {
     coroutineScope {

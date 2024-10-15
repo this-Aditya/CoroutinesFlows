@@ -13,8 +13,8 @@ fun main() = runBlocking {
     print("Factorial of? ")
     val ans = findFact(scanner.nextInt())
     // Await the result from the async coroutine
-//    val resp = ans.await()
-//    println("Answer Received: ${resp.substring(0..10)}")
+    val resp = ans.await()
+    println("Answer Received: ${resp.substring(0..10)}")
 // Here, ans is of type Deferred<String>, and no waiting has occurred.
     println("This prints immediately")
 

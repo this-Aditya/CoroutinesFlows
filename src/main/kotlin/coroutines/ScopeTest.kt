@@ -6,6 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
@@ -20,19 +21,23 @@ fun main() {
 //        joinAll(
         val currentScopeJob = currentScope.launch {
             println("Started")
-            supervisorScope {
-                launch {
-                    println("Starting task 1")
-                    delay(1000)
-//                    throw RuntimeException("Some Exception Occurred")
-                    println("Completed task 1")
-                }
+            try {
+                coroutineScope {
+                    launch {
+                        println("Starting task 1")
+                        delay(1000)
+                        throw RuntimeException("Some Exception Occurred")
+                        println("Completed task 1")
+                    }
 
-                launch {
-                    println("Starting task 2")
-                    delay(1500)
-                    println("Completed task 2")
+                    launch {
+                        println("Starting task 2")
+                        delay(1500)
+                        println("Completed task 2")
+                    }
                 }
+                } catch (e: Exception) {
+                println("Exception in the coroutinescope: $e")
             }
             launch(context = Job() + Dispatchers.Default + CoroutineName("Task 3")) {
                 println("Starting task 3")

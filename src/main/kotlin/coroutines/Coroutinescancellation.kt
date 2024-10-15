@@ -15,16 +15,21 @@ fun main() = runBlocking {
         repeat(6000000) { i ->
             try {
                 println("Performing operation #${i + 1}")
-//                delay(100L)
+                delay(10L)
             } catch (e: CancellationException) {
-//                delay(100L)
+                try {
+                delay(100L)
+                } catch (e: Exception) {
+                    println("Exception in exception")
+                }
+                println("Performing work #${i + 1}")
                 someWork()
                 throw e
             }
         }
     }
 
-    delay(5L)
+    delay(100L)
     doCancel(job)
 }
 

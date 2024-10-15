@@ -20,8 +20,8 @@ suspend fun main() {
 fun intStream() = flow<Int> {
     emit(1)
     delay(1000)
+    emit(2)
     try {
-        emit(2)
     } catch (e: Exception) {
         println("Exception $e")
     }

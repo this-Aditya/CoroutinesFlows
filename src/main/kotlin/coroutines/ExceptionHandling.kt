@@ -22,10 +22,10 @@ fun main() {
         }
     }
 
-    scope.launch {
+    scope.launch(exceptionHandler) {
 
-            deffered.await()
-            try {
+        deffered.await()
+        try {
             } catch (e: Exception) {
                 println("Exception caught $e")
             }
