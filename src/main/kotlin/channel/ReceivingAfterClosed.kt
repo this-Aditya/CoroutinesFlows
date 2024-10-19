@@ -26,6 +26,7 @@ fun main() {
         }
         delay(5000)
         sendJob.cancel()
+        channel.close()
         val receiveJob = launch {
             for (i in channel) {
                 println("Received: $i")
