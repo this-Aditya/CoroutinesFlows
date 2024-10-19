@@ -8,20 +8,28 @@ import kotlinx.coroutines.launch
 class CallbackApi {
     private var callback: DummyCallback? = null
 
-    suspend fun registerCallback(callback: DummyCallback) {
+     fun registerCallback(callback: DummyCallback): Boolean {
         this.callback = callback
         startSendingUpdates()
+        return true
     }
 
     fun unregisterCallback() {
         callback = null
     }
 
-    private suspend fun startSendingUpdates() {
+    private fun startSendingUpdates() {
         val scope = CoroutineScope(Dispatchers.Default)
         val job = scope.launch {
             try {
                 for (i in 1..6) {
+                    if (i == 1) {
+                        println("processing sending updates")
+                        delay(3000)
+                        println("Sending update")
+                        callback?.onUpdate(i)
+                        break
+                    }
                     callback?.onUpdate(i)
                     delay(1000)
                 }
@@ -31,8 +39,6 @@ class CallbackApi {
                 callback?.onError(e.message)
             }
         }
-        delay(4000)
-        job.cancel()
     }
 
 }
