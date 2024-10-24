@@ -23,11 +23,19 @@ fun main() = runBlocking(){
     val job = scope.launch {
         println("In launch")
         try {
-            withContext(context) {
+            val x = withContext(Dispatchers.Default) {
                 println("in withContext")
-                factorialOf(130000)
+                withContext(scope.coroutineContext) {
+                    println("Staring the sub-context")
+                    factorialOf(30000)
+                    println("Completing the sub context")
+                }
+                println("Completed sub with context")
+                val fact = factorialOf(130000)
                 println("out withContext")
+                fact
             }
+            println("Result is: $x")
         } catch (e: Exception) {
             println("Exception got $e")
         }
@@ -43,18 +51,18 @@ fun main() = runBlocking(){
     println("Quitting")
 }
 
-private suspend fun CoroutineScope.factorialOf(num: Int) {
+suspend fun CoroutineScope.factorialOf(num: Int) {
     var result = BigInteger.ONE
     val resultComputationTime = measureTimeMillis {
         println("Computing factorial of $num")
         for (i in 1..num) {
-            ensureActive()
+//            ensureActive()
             result = result.multiply(BigInteger.valueOf(i.toLong()))
         }
     }
     var resultString = ""
     val stringConversionTime = measureTimeMillis {
-        ensureActive()
+//        ensureActive()
         resultString = result.toString()
     }
     println("Completed the work:Result ComputationTime: $resultComputationTime. Result String conversion time: $stringConversionTime")
