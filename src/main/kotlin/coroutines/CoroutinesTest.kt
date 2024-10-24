@@ -20,7 +20,7 @@ fun main() = runBlocking {
 
 }
 
-suspend fun findFact(num: Int): Deferred<String> = coroutineScope {
+private suspend fun findFact(num: Int): Deferred<String> = coroutineScope {
     // Return async directly
     val ref = async {
         var result = BigInteger.ONE
