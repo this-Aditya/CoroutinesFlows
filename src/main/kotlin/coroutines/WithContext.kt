@@ -51,18 +51,16 @@ fun main() = runBlocking(){
     println("Quitting")
 }
 
-suspend fun CoroutineScope.factorialOf(num: Int) {
+private fun CoroutineScope.factorialOf(num: Int) {
     var result = BigInteger.ONE
     val resultComputationTime = measureTimeMillis {
         println("Computing factorial of $num")
         for (i in 1..num) {
-//            ensureActive()
             result = result.multiply(BigInteger.valueOf(i.toLong()))
         }
     }
     var resultString = ""
     val stringConversionTime = measureTimeMillis {
-//        ensureActive()
         resultString = result.toString()
     }
     println("Completed the work:Result ComputationTime: $resultComputationTime. Result String conversion time: $stringConversionTime")
