@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
 val coroutineContext: CoroutineContext = Dispatchers.Default
-val job: Job = SupervisorJob()
+private val job: Job = SupervisorJob()
 val scope: CoroutineScope = CoroutineScope(coroutineContext + job)
 
 fun main() {
