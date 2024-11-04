@@ -5,6 +5,7 @@ import java.util.TimerTask
 
 class DummyCallbackApi {
 
+    var num: Int = 0
     interface Callback {
         fun onUpdate(data: String)
     }
@@ -17,6 +18,7 @@ class DummyCallbackApi {
             override fun run() {
                 // Simulate some data being generated
                 val data = "Update at ${System.currentTimeMillis()}"
+                println("Emitting ${++num}")
                 callback.onUpdate(data)
             }
         }, 0, intervalMillis) // Initial delay is 0, interval is specified by caller

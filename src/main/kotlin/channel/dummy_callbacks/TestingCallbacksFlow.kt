@@ -46,12 +46,19 @@ fun main() {
 }
 
 fun getCallbackFlow(): Flow<String> {
-//    if (callbackFlow != null) return callbackFlow!!
     println("Creating callback")
+
+
     val api = DummyCallbackApi()
     var callback: DummyCallbackApi.Callback? = null
     callbackFlow = callbackFlow {
-        callback = createCallback()
+        callback = object : DummyCallbackApi.Callback {
+            override fun onUpdate(data: String) {
+                trySendBlocking("Received: $data")
+            }
+        }
+
+
         println("CP 1")
         api.registerCallback(callback, 2000)
         println("CP 2")
@@ -64,10 +71,4 @@ fun getCallbackFlow(): Flow<String> {
     }
     println("CP: 6")
     return callbackFlow!!
-}
-
-fun ProducerScope<String>.createCallback() = object : DummyCallbackApi.Callback {
-    override fun onUpdate(data: String) {
-        trySendBlocking("Received: $data")
-    }
 }
