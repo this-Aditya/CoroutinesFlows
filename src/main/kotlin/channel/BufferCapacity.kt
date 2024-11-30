@@ -64,7 +64,7 @@ fun main() = runBlocking {
         delay(250)  // Simulating delay before cancel
         println("Cancelling the channel...")
         try {
-            channel.cancel()  // Cancelling the channel
+            channel.close()  // Cancelling the channel
             delay(1000)
             println("Is Active? ${coroutineContext.isActive}")
         } catch (e: CancellationException) {
@@ -80,6 +80,6 @@ fun main() = runBlocking {
             println("Received: $i")
         }
     } catch (e: Exception) {
-        println("Channel cancelled: ${e.message} isActive: ${job.isActive}")
+        println("Channel cancelled: $e isActive: ${job.isActive}")
     }
 }

@@ -16,11 +16,11 @@ fun main(){
 
     val flow = callbackFlow<String> {
 //        println("Started callback flow")
-        trySendBlocking("one")
+        trySend("one")
 //        println("One")
-        send("two")
+        trySend("two")
 //        println("Two")
-        trySendBlocking("three")
+        trySend("three")
 //        println("Three")
 //        close()
         awaitClose {
